@@ -32,3 +32,40 @@ def read_file(filename):
     except Exception as e:
         print(f"Error reading file: {e}")
         return None
+
+def main():
+    print("=" * 50)
+    print("DOCUMENT ANALYZER - Version 0.1")
+    print("=" * 50)
+    
+    # Ask user for filename
+    filename = input("\nEnter the filename to analyze: ")
+    
+    # Read the file
+    content = read_file(filename)
+    
+    if content is None:
+        return
+    
+    # Analyze the content
+    stats = analyze_text(content)
+    
+    # Display results
+    print("\n" + "=" * 50)
+    print("ANALYSIS RESULTS")
+    print("=" * 50)
+    print(f"Words: {stats['words']}")
+    print(f"Characters: {stats['characters']}")
+    print(f"Sentences: {stats['sentences']}")
+    print(f"Average word length: {stats['avg_word_length']:.2f} characters")
+    
+    # Show first 200 characters as preview
+    print("\n" + "=" * 50)
+    print("PREVIEW (first 200 characters)")
+    print("=" * 50)
+    print(content[:200])
+    if len(content) > 200:
+        print("...")
+
+if __name__ == "__main__":
+    main()
