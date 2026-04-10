@@ -33,6 +33,50 @@ def read_file(filename):
         print(f"Error reading file: {e}")
         return None
 
+def find_common_words(text, top_n=5):
+    """Find the most frequent words in text"""
+    # Convert to lowercase and split
+    words = text.lower().split()
+    
+    # Remove common punctuation
+    clean_words = []
+    for word in words:
+        # Remove . , ! ? ; : from ends of words
+        clean_word = word.strip('.,!?;:()"\'')
+        if clean_word:  # Only add if not empty
+            clean_words.append(clean_word)
+    
+    # Count occurrences
+    word_counts = {}
+    for word in clean_words:
+        if word in word_counts:
+            word_counts[word] += 1
+        else:
+            word_counts[word] = 1
+    
+    # Sort by count (highest first)
+    sorted_words = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
+    
+    # Return top N
+    return sorted_words[:top_n]
+
+def save_results_to_file(filename, stats):
+    with open(f"{filename}_analysis.txt", "w", encoding='utf-8') as newFile:
+        newFile.write("=" * 40 + "\n") 
+        newFile.write("ANALYSIS REPORT\n") 
+        newFile.write("=" * 40 + "\n\n")   
+        newFile.write(f"Words: {stats['words']}\n")
+        newFile.write(f"Characters: {stats['characters']}\n")
+        newFile.write(f"Sentences: {stats['sentences']}\n")
+        newFile.write(f"Average word length: {stats['avg_word_length']:.2f} characters\n")
+        newFile.write("=" * 40 + "\n") 
+        newFile.write("REPORT FINALIZED\n") 
+        newFile.write("=" * 40 + "\n\n")
+
+
+
+
+
 def main():
     print("=" * 50)
     print("DOCUMENT ANALYZER - Version 0.1")
@@ -66,6 +110,24 @@ def main():
     print(content[:200])
     if len(content) > 200:
         print("...")
+
+    print("\n" + "=" * 50)
+    print("MOST COMMON WORDS")
+    print("=" * 50)
+    common = find_common_words(content, 5)
+    for word, count in common:
+        # Skip very common words (stop words)
+        if word not in ['the', 'and', 'to', 'of', 'a', 'in', 'is', 'it', 'for']:
+            print(f"  '{word}' appears {count} times")
+    
+    # After your last print statement in main()
+    ask_save = input("\nSave results to file? (yes/no): ")
+
+    if ask_save.lower() == 'yes' or ask_save.lower() == 'y':
+        save_results_to_file(filename, stats)
+        print(f"✓ Results saved to {filename}_analysis.txt")
+    else:
+        print("Results not saved")
 
 if __name__ == "__main__":
     main()
